@@ -13,12 +13,26 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
+/**
+ * Configuration class for setting up Semantic Kernel components.
+ * <p>
+ * This configuration provides several beans necessary for the interaction with
+ * Azure OpenAI services and the creation of kernel plugins. It defines beans for
+ * chat completion services, kernel plugins, kernel instance, invocation context,
+ * and prompt execution settings.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class SemanticKernelConfiguration {
 
     private final OpenAIProperties openAIProperties;
 
+    /**
+     * Creates a {@link ChatCompletionService} bean for handling chat completions using Azure OpenAI.
+     *
+     * @param openAIAsyncClient the {@link OpenAIAsyncClient} to communicate with Azure OpenAI
+     * @return an instance of {@link ChatCompletionService}
+     */
     @Bean
     public ChatCompletionService chatCompletionService(OpenAIAsyncClient openAIAsyncClient) {
         return OpenAIChatCompletion.builder()
@@ -27,6 +41,12 @@ public class SemanticKernelConfiguration {
                 .build();
     }
 
+    /**
+     * Creates a {@link Kernel} bean to manage AI services and plugins.
+     *
+     * @param chatCompletionService the {@link ChatCompletionService} for handling completions
+     * @return an instance of {@link Kernel}
+     */
     @Bean
     public Kernel kernel(ChatCompletionService chatCompletionService) {
         return Kernel.builder()
@@ -34,6 +54,11 @@ public class SemanticKernelConfiguration {
                 .build();
     }
 
+    /**
+     * Creates an {@link InvocationContext} bean with default prompt execution settings.
+     *
+     * @return an instance of {@link InvocationContext}
+     */
     @Bean
     public InvocationContext invocationContext() {
         return InvocationContext.builder()
@@ -43,6 +68,11 @@ public class SemanticKernelConfiguration {
                 .build();
     }
 
+    /**
+     * Creates a map of {@link PromptExecutionSettings} for different models.
+     *
+     * @return a map of model names to {@link PromptExecutionSettings}
+     */
     @Bean
     public Map<String, PromptExecutionSettings> promptExecutionsSettingsMap() {
         return Map.of(openAIProperties.getDeploymentName(), PromptExecutionSettings.builder()
