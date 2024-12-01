@@ -5,6 +5,7 @@ import com.epam.learn.ai.model.OpenAIProperties;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIChatCompletion;
 import com.microsoft.semantickernel.orchestration.InvocationContext;
+import com.microsoft.semantickernel.orchestration.InvocationReturnMode;
 import com.microsoft.semantickernel.orchestration.PromptExecutionSettings;
 import com.microsoft.semantickernel.services.chatcompletion.ChatCompletionService;
 import lombok.RequiredArgsConstructor;
@@ -61,10 +62,12 @@ public class SemanticKernelConfiguration {
      */
     @Bean
     public InvocationContext invocationContext() {
+        PromptExecutionSettings promptExecutionSettings = PromptExecutionSettings.builder()
+                .withResultsPerPrompt(1)
+                .withTemperature(1.0)
+                .build();
         return InvocationContext.builder()
-                .withPromptExecutionSettings(PromptExecutionSettings.builder()
-                        .withTemperature(1.0)
-                        .build())
+                .withPromptExecutionSettings(promptExecutionSettings)
                 .build();
     }
 
@@ -75,9 +78,9 @@ public class SemanticKernelConfiguration {
      */
     @Bean
     public Map<String, PromptExecutionSettings> promptExecutionsSettingsMap() {
-        return Map.of(openAIProperties.getDeploymentName(), PromptExecutionSettings.builder()
+        var promptExecutionSettings = PromptExecutionSettings.builder()
                 .withTemperature(1.0)
-                .build());
+                .build();
+        return Map.of(openAIProperties.getDeploymentName(), promptExecutionSettings);
     }
-
 }
