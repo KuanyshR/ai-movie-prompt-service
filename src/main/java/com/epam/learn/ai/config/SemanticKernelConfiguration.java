@@ -5,13 +5,12 @@ import com.epam.learn.ai.model.OpenAIProperties;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIChatCompletion;
 import com.microsoft.semantickernel.orchestration.InvocationContext;
-import com.microsoft.semantickernel.orchestration.InvocationReturnMode;
 import com.microsoft.semantickernel.orchestration.PromptExecutionSettings;
 import com.microsoft.semantickernel.services.chatcompletion.ChatCompletionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -72,15 +71,18 @@ public class SemanticKernelConfiguration {
     }
 
     /**
-     * Creates a map of {@link PromptExecutionSettings} for different models.
-     *
-     * @return a map of model names to {@link PromptExecutionSettings}
+     * Creates a map of {@link ChatCompletionService} for different models.     *
+     * @return a map of model names to {@link ChatCompletionService}
      */
     @Bean
-    public Map<String, PromptExecutionSettings> promptExecutionsSettingsMap() {
-        var promptExecutionSettings = PromptExecutionSettings.builder()
-                .withTemperature(1.0)
-                .build();
-        return Map.of(openAIProperties.getDeploymentName(), promptExecutionSettings);
+    public Map<String, ChatCompletionService> completionServiceMap(OpenAIAsyncClient openAIAsyncClient) {
+        var completionServiceMap = new HashMap<String, ChatCompletionService>();
+        openAIProperties.getModelList()
+                .forEach(modelId -> {
+                    completionServiceMap.put(modelId, OpenAIChatCompletion.builder()
+                            .withModelId(modelId)
+                            .withOpenAIAsyncClient(openAIAsyncClient).build());
+                });
+        return completionServiceMap;
     }
 }

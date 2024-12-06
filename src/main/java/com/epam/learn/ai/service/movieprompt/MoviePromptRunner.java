@@ -1,6 +1,7 @@
-package com.epam.learn.ai.service;
+package com.epam.learn.ai.service.movieprompt;
 
-import com.epam.learn.ai.model.MovieFactsResponse;
+import com.epam.learn.ai.service.ChatHistoryInstance;
+import com.epam.learn.ai.service.history.SimpleKernelHistory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
