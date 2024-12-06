@@ -10,7 +10,7 @@ import com.microsoft.semantickernel.services.chatcompletion.ChatCompletionServic
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -61,23 +61,28 @@ public class SemanticKernelConfiguration {
      */
     @Bean
     public InvocationContext invocationContext() {
+        PromptExecutionSettings promptExecutionSettings = PromptExecutionSettings.builder()
+                .withResultsPerPrompt(1)
+                .withTemperature(1.0)
+                .build();
         return InvocationContext.builder()
-                .withPromptExecutionSettings(PromptExecutionSettings.builder()
-                        .withTemperature(1.0)
-                        .build())
+                .withPromptExecutionSettings(promptExecutionSettings)
                 .build();
     }
 
     /**
-     * Creates a map of {@link PromptExecutionSettings} for different models.
-     *
-     * @return a map of model names to {@link PromptExecutionSettings}
+     * Creates a map of {@link ChatCompletionService} for different models.     *
+     * @return a map of model names to {@link ChatCompletionService}
      */
     @Bean
-    public Map<String, PromptExecutionSettings> promptExecutionsSettingsMap() {
-        return Map.of(openAIProperties.getDeploymentName(), PromptExecutionSettings.builder()
-                .withTemperature(1.0)
-                .build());
+    public Map<String, ChatCompletionService> completionServiceMap(OpenAIAsyncClient openAIAsyncClient) {
+        var completionServiceMap = new HashMap<String, ChatCompletionService>();
+        openAIProperties.getModelList()
+                .forEach(modelId -> {
+                    completionServiceMap.put(modelId, OpenAIChatCompletion.builder()
+                            .withModelId(modelId)
+                            .withOpenAIAsyncClient(openAIAsyncClient).build());
+                });
+        return completionServiceMap;
     }
-
 }
