@@ -1,4 +1,4 @@
-package com.epam.learn.ai.service;
+package com.epam.learn.ai.service.movieprompt;
 
 import com.azure.ai.openai.OpenAIAsyncClient;
 import com.azure.ai.openai.models.ChatCompletions;

@@ -1,4 +1,4 @@
-package com.epam.learn.ai.service;
+package com.epam.learn.ai.service.history;
 
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.orchestration.FunctionResult;
@@ -19,7 +19,6 @@ import reactor.core.publisher.Mono;
  * It uses the {@link Kernel} to invoke AI responses based on the user's input and the
  * previous chat context. The conversation history is updated after each interaction.
  */
-
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -35,8 +34,9 @@ public class SimpleKernelHistoryImpl implements SimpleKernelHistory {
      * @param prompt the user's input
      * @param chatHistory the current chat history
      */
+    @Override
     public Mono<String> processWithHistory(String prompt, ChatHistory chatHistory) {
-        KernelFunctionArguments arguments = getKernelFunctionArguments(prompt, chatHistory);
+        var arguments = getKernelFunctionArguments(prompt, chatHistory);
         return kernel.invokeAsync(getChat())
                 .withPromptExecutionSettings(invocationContext.getPromptExecutionSettings())
                 .withArguments(arguments)

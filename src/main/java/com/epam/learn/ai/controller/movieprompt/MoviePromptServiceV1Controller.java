@@ -1,7 +1,7 @@
-package com.epam.learn.ai.controller;
+package com.epam.learn.ai.controller.movieprompt;
 
 import com.epam.learn.ai.model.MovieFactsResponse;
-import com.epam.learn.ai.service.MoviePromptService;
+import com.epam.learn.ai.service.movieprompt.MoviePromptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,13 +11,13 @@ import reactor.core.publisher.Mono;
 
 /**
  * The movie controller responsible for generating a response based on the prompt of the movie title.
- * The Semantic Kernel service is used.
+ * The OpenAI service is used.
  *
  */
 @RestController
-@RequestMapping("/v2")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
-public class MoviePromptServiceV2Controller {
+public class MoviePromptServiceV1Controller {
 
     public final MoviePromptService moviePromptService;
 
@@ -29,6 +29,6 @@ public class MoviePromptServiceV2Controller {
      */
     @GetMapping("/ai/movieprompt")
     public Mono<MovieFactsResponse> getMoviePrompt(@RequestParam("prompt") String prompt) {
-        return moviePromptService.getMoviePromptSemKernel(prompt);
+        return moviePromptService.getMoviePromptOpenAI(prompt);
     }
 }

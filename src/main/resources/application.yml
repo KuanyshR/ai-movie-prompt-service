@@ -2,6 +2,8 @@ spring.application.name: ai-movie-prompt-service
 
 client:
   openai:
-    key: ${AZURE_OPEN_AI_API_KEY}
-    endpoint: ${AZURE_OPEN_AI_ENDPOINT}
-    deployment_name: ${AZURE_OPEN_AI_DEPLOYMENT_NAME}
+    key: ${OPEN_AI_KEY}
+    endpoint: ${OPEN_AI_ENDPOINT}
+    deployment_name: ${AI_DEPLOYMENT_NAME}
+    modellist: ${AI_DEPLOYMENT_NAME_LIST}
+
