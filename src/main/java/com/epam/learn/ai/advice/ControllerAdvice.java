@@ -1,6 +1,6 @@
 package com.epam.learn.ai.advice;
 
-import com.epam.learn.ai.exception.ModelNotFoundException;
+import com.epam.learn.ai.exception.NotFoundException;
 import com.epam.learn.ai.model.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ public class ControllerAdvice {
     @ExceptionHandler
     public ResponseEntity<?> exceptionHandler(Exception e){
 
-        if(e instanceof ModelNotFoundException) {
+        if(e instanceof NotFoundException) {
 
             log.error(e.getMessage());
 
@@ -27,6 +27,7 @@ public class ControllerAdvice {
                     .status(400)
                     .body(errorResponse);
         }
+
         return ResponseEntity
                 .status(500)
                 .body("Problem occured while chatting with AI");
