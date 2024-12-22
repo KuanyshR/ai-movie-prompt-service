@@ -11,25 +11,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ControllerAdvice {
 
-    @ExceptionHandler
+    @ExceptionHandler(exception = NotFoundException.class)
     public ResponseEntity<?> exceptionHandler(Exception e){
 
-        if(e instanceof NotFoundException) {
+        log.error(e.getMessage());
 
-            log.error(e.getMessage());
-
-            var errorResponse = ErrorResponse.builder()
-                    .code(400)
-                    .message(e.getMessage())
-                    .build();
-
-            return ResponseEntity
-                    .status(400)
-                    .body(errorResponse);
-        }
+        var errorResponse = ErrorResponse.builder()
+                .code(400)
+                .message(e.getMessage())
+                .build();
 
         return ResponseEntity
-                .status(500)
-                .body("Problem occured while chatting with AI");
+                .status(400)
+                .body(errorResponse);
+
     }
 }
