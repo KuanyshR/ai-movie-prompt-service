@@ -2,10 +2,14 @@ package com.epam.learn.ai.config;
 
 import com.azure.ai.openai.OpenAIAsyncClient;
 import com.epam.learn.ai.model.OpenAIProperties;
+import com.epam.learn.ai.service.plugin.ActorsByGenrePlugin;
+import com.epam.learn.ai.service.plugin.AlienMovieFactsPlugin;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIChatCompletion;
 import com.microsoft.semantickernel.orchestration.InvocationContext;
 import com.microsoft.semantickernel.orchestration.PromptExecutionSettings;
+import com.microsoft.semantickernel.plugin.KernelPlugin;
+import com.microsoft.semantickernel.plugin.KernelPluginFactory;
 import com.microsoft.semantickernel.services.chatcompletion.ChatCompletionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -55,6 +59,24 @@ public class SemanticKernelConfiguration {
     }
 
     /**
+     * Creates a {@link Kernel} bean to manage AI services and plugins.
+     *
+     * @param chatCompletionService the {@link ChatCompletionService} for handling completions
+     * @return an instance of {@link Kernel}
+     */
+    @Bean
+    public Kernel kernelWithPlugin(ChatCompletionService chatCompletionService,
+                                   KernelPlugin actorsByGenrePlugin,
+                                   KernelPlugin alienMovieFactsPlugin)
+    {
+        return Kernel.builder()
+                .withAIService(ChatCompletionService.class, chatCompletionService)
+                .withPlugin(actorsByGenrePlugin)
+                .withPlugin(alienMovieFactsPlugin)
+                .build();
+    }
+
+    /**
      * Creates an {@link InvocationContext} bean with default prompt execution settings.
      *
      * @return an instance of {@link InvocationContext}
@@ -84,5 +106,25 @@ public class SemanticKernelConfiguration {
                             .withOpenAIAsyncClient(openAIAsyncClient).build());
                 });
         return completionServiceMap;
+    }
+
+    /**
+     * Creates a {@link KernelPlugin} bean for get actors by genre.
+     *
+     * @return an instance of {@link KernelPlugin}
+     */
+    @Bean
+    public KernelPlugin actorsByGenrePlugin() {
+        return KernelPluginFactory.createFromObject(new ActorsByGenrePlugin(), "ActorsByGenrePlugin");
+    }
+
+    /**
+     * Creates a {@link KernelPlugin} bean for get alien movie facts.
+     *
+     * @return an instance of {@link KernelPlugin}
+     */
+    @Bean
+    public KernelPlugin alienMovieFactsPlugin() {
+        return KernelPluginFactory.createFromObject(new AlienMovieFactsPlugin(), "AlienMovieFactsPlugin");
     }
 }
