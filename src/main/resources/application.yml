@@ -7,3 +7,6 @@ client:
     deployment_name: ${AI_DEPLOYMENT_NAME}
     modellist: ${AI_DEPLOYMENT_NAME_LIST}
 
+embedding:
+  model: ${EMBEDDING_MODEL}
+  collection-name: ${COLLECTION_NAME}
