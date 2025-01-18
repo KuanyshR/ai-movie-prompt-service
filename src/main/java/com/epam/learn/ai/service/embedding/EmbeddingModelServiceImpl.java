@@ -79,6 +79,7 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
      * converts them into vector points, and stores them in the Qdrant collection.
      *
      * @param text the input text to be processed into embeddings
+     * @return text that stored in DB
      */
     @Override
     public Flux<EmbeddingResponse> search(String text) {
@@ -87,6 +88,25 @@ public class EmbeddingModelServiceImpl implements EmbeddingModelService {
                 .map(this::searchStoredPoints)
                 .map(this::toEmbeddingResponse)
                 .flatMapIterable(embeddingResponses -> embeddingResponses);
+    }
+
+    /**
+     * This process takes input text, creates embeddings,
+     * converts them into vector points, and search them in the Qdrant collection.
+     *
+     * @param text the input text to be processed into embeddings
+     * @return text that stored in DB
+     */
+    @Override
+    public Flux<String> searchText(String text) {
+        return getEmbeddings(text)
+                .map(this::toFloatList)
+                .map(this::searchStoredPoints)
+                .map(scoredPoints -> scoredPoints.stream().toList())
+                .flatMapIterable(scoredPoints -> scoredPoints)
+                .filter(scoredPoint -> scoredPoint.containsPayload("input"))
+                .map(scoredPoint -> scoredPoint.getPayloadMap()
+                        .get("input").getStringValue());
     }
 
     private ArrayList<Points.PointStruct> pointStructs(List<EmbeddingItem> items) {

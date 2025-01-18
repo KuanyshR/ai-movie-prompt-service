@@ -6,7 +6,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public interface EmbeddingModelService {
 
@@ -15,4 +14,6 @@ public interface EmbeddingModelService {
     Flux<EmbeddingResponse> search(String text);
 
     void processAndSaveText(String text);
+
+    Flux<String> searchText(String text);
 }
